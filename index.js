@@ -142,6 +142,38 @@ const User = mongoose.model("User", {
   },
 });
 
+const person = mongoose.model("Person", {
+  name: {
+    type: String,
+  },
+  email: {
+    type: String,
+    unique: true,
+  },
+  password: {
+    type: String,
+  },
+  cartData: {
+    type: Object,
+  },
+  count: {
+    type: Number,
+  },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+const user = new person({
+  name: "ahmad",
+  email: "ahmadsada",
+  password: "dada",
+  
+});
+
+user.save();
+
 app.post("/signup", async (req, res) => {
   let check = await User.findOne({ email: req.body.email });
   if (check) {
@@ -240,6 +272,7 @@ app.post("/removefromcart", fetchUser, async (req, res) => {
   let userData = await User.findOne({ _id: req.user.id });
   if (userData.cartData[req.body.itemId] > 0) {
     userData.cartData[req.body.itemId] -= 1;
+    userData.count -= 1;
   }
   await User.findOneAndUpdate(
     { _id: req.user.id },
@@ -252,6 +285,8 @@ app.post("/getcart", fetchUser, async (req, res) => {
   let userData = await User.findOne({ _id: req.user.id });
   res.json([userData.cartData, userData.count]);
 });
+
+
 
 app.listen(port, (error) => {
   if (!error) {
