@@ -276,7 +276,7 @@ app.post("/removefromcart", fetchUser, async (req, res) => {
   }
   await User.findOneAndUpdate(
     { _id: req.user.id },
-    { cartData: userData.cartData }
+    { cartData: userData.cartData , count: userData.count}
   );
 });
 
